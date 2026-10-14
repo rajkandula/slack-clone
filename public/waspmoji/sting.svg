@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<style>
+@media (prefers-reduced-motion: no-preference) {
+@keyframes jab{0%,100%{transform:translate(0,0)}50%{transform:translate(4px,2px)}} .st{animation:jab .5s ease-in-out infinite}
+}
+</style>
+<g class="" style="transform-origin:32px 36px">
+<g class="ant" style="transform-origin:32px 12px">
+<path d="M14 10 Q10 2 4 4" stroke="#3b3b3f" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M50 10 Q54 2 60 4" stroke="#3b3b3f" stroke-width="3" fill="none" stroke-linecap="round"/>
+<circle cx="4" cy="4" r="3" fill="#1d4ed8"/><circle cx="60" cy="4" r="3" fill="#1d4ed8"/>
+</g>
+<circle cx="32" cy="36" r="26" fill="#FFC93D"/>
+<path d="M9 45 a26 26 0 0 0 46 0 z" fill="#3b3b3f"/>
+<path d="M12 50 a26 26 0 0 0 40 0 v-5 H12 z" fill="#FFC93D"/>
+<path d="M15 55 a26 26 0 0 0 34 0 v-4 H15 z" fill="#3b3b3f"/>
+<path class="st" d="M47 50 l14 6 -5 3 z" fill="#1d4ed8"/>
+<path d="M18 28 l10 4 M46 28 l-10 4" stroke="#1f2937" stroke-width="3.4" stroke-linecap="round"/><path d="M22 42 q10 6 20 -2" stroke="#1f2937" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+</g></svg>

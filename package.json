@@ -1,0 +1,52 @@
+{
+  "name": "wasp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "db:provision": "tsx src/scripts/provision-db.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1070.0",
+    "@aws-sdk/s3-request-presigner": "^3.1070.0",
+    "@tensorflow/tfjs": "^4.22.0",
+    "bcryptjs": "^3.0.3",
+    "epubjs": "^0.3.93",
+    "heic-convert": "^2.1.0",
+    "highlight.js": "^11.12.0",
+    "jsonwebtoken": "^9.0.3",
+    "lucide-react": "^1.20.0",
+    "mammoth": "^1.12.1",
+    "mermaid": "^11.17.0",
+    "mongodb": "^7.3.0",
+    "motion": "^13.1.0",
+    "next": "16.2.9",
+    "nsfwjs": "^4.3.0",
+    "obscenity": "^0.4.6",
+    "postcss": "^8.5.26",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
+    "sharp": "^0.35.3",
+    "web-push": "^3.6.7",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/web-push": "^3.6.4",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.9",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.22.4",
+    "typescript": "^5"
+  }
+}

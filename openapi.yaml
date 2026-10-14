@@ -1,0 +1,265 @@
+openapi: 3.1.0
+info:
+  title: WASP API
+  version: "1.0.0"
+  description: >
+    REST contract for the WASP chat platform. REST handles actions and CRUD;
+    real-time delivery is over Server-Sent Events (SSE).
+    All writes are idempotent. All list endpoints use cursor pagination.
+servers:
+  - url: http://localhost:3000/api
+
+security:
+  - cookieAuth: []
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error: { type: string }
+
+    User:
+      type: object
+      properties:
+        id: { type: string }
+        username: { type: string }
+        avatarUrl: { type: string }
+        status: { type: string, enum: [online, offline] }
+
+    Chat:
+      type: object
+      properties:
+        id: { type: string }
+        type: { type: string, enum: [direct, group] }
+        name: { type: string }
+        avatarUrl: { type: string }
+        participants: { type: array, items: { type: string } }
+        unreadCount: { type: integer }
+        createdAt: { type: string, format: date-time }
+        lastMessage:
+          type: object
+          nullable: true
+          properties:
+            id: { type: string }
+            text: { type: string, nullable: true }
+            mediaType: { type: string, nullable: true }
+            senderUsername: { type: string }
+            createdAt: { type: string, format: date-time }
+            readBy: { type: array, items: { type: string } }
+
+    Message:
+      type: object
+      properties:
+        id: { type: string }
+        chatId: { type: string }
+        senderId: { type: string }
+        senderUsername: { type: string }
+        seq: { type: integer }
+        threadId: { type: string, nullable: true }
+        text: { type: string, nullable: true }
+        mediaUrl: { type: string, nullable: true }
+        mediaType: { type: string, enum: [image, video, file], nullable: true }
+        mediaName: { type: string, nullable: true }
+        mediaSize: { type: integer, nullable: true }
+        readBy: { type: array, items: { type: string } }
+        createdAt: { type: string, format: date-time }
+
+paths:
+  /auth/signup:
+    post:
+      summary: Register a new account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password]
+              properties:
+                username: { type: string }
+                password: { type: string }
+      responses:
+        "200":
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user: { $ref: '#/components/schemas/User' }
+        "400": { description: Invalid inputs }
+        "409": { description: Username taken }
+
+  /auth/login:
+    post:
+      summary: Login to account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password]
+              properties:
+                username: { type: string }
+                password: { type: string }
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user: { $ref: '#/components/schemas/User' }
+        "401": { description: Invalid credentials }
+
+  /auth/logout:
+    post:
+      summary: Log out of the current session
+      responses:
+        "200": { description: Logged out }
+
+  /auth/me:
+    get:
+      summary: Get authenticated session profile
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user: { $ref: '#/components/schemas/User' }
+        "401": { description: Unauthorized }
+
+  /chats:
+    get:
+      summary: Get all conversations
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  chats: { type: array, items: { $ref: '#/components/schemas/Chat' } }
+    post:
+      summary: Start a new DM or Group Chat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [type]
+              properties:
+                type: { type: string, enum: [direct, group] }
+                recipientUsername: { type: string, description: "Required for direct" }
+                name: { type: string, description: "Required for group" }
+                participantUsernames: { type: array, items: { type: string } }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  chat: { $ref: '#/components/schemas/Chat' }
+
+  /messages:
+    get:
+      summary: Get message history for a conversation
+      parameters:
+        - name: chatId
+          in: query
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  messages: { type: array, items: { $ref: '#/components/schemas/Message' } }
+    post:
+      summary: Send a message (Text or Media)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [chatId]
+              properties:
+                chatId: { type: string }
+                clientMsgId: { type: string, description: "Client UUID for idempotency" }
+                text: { type: string }
+                threadId: { type: string }
+                mediaUrl: { type: string }
+                mediaType: { type: string, enum: [image, video, file] }
+                mediaName: { type: string }
+                mediaSize: { type: integer }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { $ref: '#/components/schemas/Message' }
+
+  /messages/sync:
+    get:
+      summary: SSE dynamic connection for real-time synchronization
+      parameters:
+        - name: since
+          in: query
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Event stream established
+
+  /messages/threads:
+    get:
+      summary: Fetch threaded replies
+      parameters:
+        - name: threadId
+          in: query
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  messages: { type: array, items: { $ref: '#/components/schemas/Message' } }
+
+  /chats/summarize:
+    get:
+      summary: Retrieve AI-generated chat summary and action items
+      parameters:
+        - name: chatId
+          in: query
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  summary: { type: string }
+                  actionItems: { type: array, items: { type: string } }

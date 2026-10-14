@@ -1,0 +1,561 @@
+@import "tailwindcss";
+
+/* =========================================================================
+   WASP Design System
+   -------------------------------------------------------------------------
+   Light is the default theme. Dark is applied two ways:
+     1. :root[data-theme="dark"]           -> explicit user choice
+     2. prefers-color-scheme + :not([data-theme="light"]) -> system default
+   Every colour is a token. Components must never hardcode a colour, so that
+   both themes stay in sync from one place.
+   ========================================================================= */
+
+:root {
+  /* ---- Surfaces ---------------------------------------------------- */
+  --bg-app: #ffffff;
+  --bg-sidebar: #f7f8fa;
+  --bg-rail: #f0f1f4;
+  --bg-chat: #ffffff;
+  --bg-header: rgba(255, 255, 255, 0.85);
+  --bg-composer: rgba(255, 255, 255, 0.85);
+  --bg-elevated: #ffffff;
+
+  /* ---- Neutral "layer" tokens --------------------------------------
+     Polarity-flipping subtle contrast layers. Dark themes tint with white,
+     light themes tint with black, so the same token reads correctly as a
+     hover background OR a hairline border in either theme.               */
+  --layer-1: rgba(0, 0, 0, 0.03);
+  --layer-2: rgba(0, 0, 0, 0.06);
+  --layer-3: rgba(0, 0, 0, 0.09);
+  --layer-4: rgba(0, 0, 0, 0.13);
+  --layer-scrim: rgba(0, 0, 0, 0.40);
+
+  /* ---- Message bubbles ---------------------------------------------- */
+  --bg-bubble-in: #f1f3f5;
+  --bg-bubble-in-hover: #e9ecef;
+  --bg-bubble-out: #2563eb;
+  --bg-bubble-out-hover: #1d4ed8;
+  --text-bubble-out: #ffffff;
+  --bg-input: rgba(0, 0, 0, 0.03);
+
+  /* ---- Raised surfaces (hover rows, ghost controls) ------------------ */
+  --bg-surface: rgba(0, 0, 0, 0.03);
+  --bg-surface-hover: rgba(0, 0, 0, 0.06);
+  --bg-row-active: rgba(37, 99, 235, 0.10);
+
+  /* ---- Borders ------------------------------------------------------- */
+  --border-color: rgba(0, 0, 0, 0.09);
+  --border-color-active: rgba(0, 0, 0, 0.14);
+
+  /* ---- Accent -------------------------------------------------------- */
+  --accent: #2563eb;
+  --accent-strong: #1d4ed8;
+  --accent-hover: #1d4ed8;
+  --accent-blue: #1d4ed8;
+  --accent-muted: rgba(37, 99, 235, 0.10);
+  --accent-ring: rgba(37, 99, 235, 0.40);
+  --accent-contrast: #ffffff;
+
+  /* ---- Semantic ------------------------------------------------------ */
+  --color-online: #16a34a;
+  --danger: #dc2626;
+  --danger-soft: rgba(220, 38, 38, 0.08);
+  --danger-border: rgba(220, 38, 38, 0.22);
+  --warning: #d97706;
+
+  /* ---- Text ---------------------------------------------------------- */
+  --text-primary: #1a1d21;
+  --text-secondary: #5b6169;
+  --text-muted: #868d96;
+  --text-on-accent: #ffffff;
+
+  /* ---- Elevation ----------------------------------------------------- */
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --shadow-md: 0 4px 16px rgba(16, 24, 40, 0.10);
+  --shadow-lg: 0 12px 32px rgba(16, 24, 40, 0.16);
+
+  /* ---- Typography & metrics ------------------------------------------ */
+  --font-primary: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-chat: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --sidebar-width: 240px;
+  --rail-width: 68px;
+
+  color-scheme: light;
+}
+
+/* ---- Dark: explicit opt-in ------------------------------------------- */
+:root[data-theme="dark"] {
+  --bg-app: #0f0f12;
+  --bg-sidebar: #131317;
+  --bg-rail: #0a0a0c;
+  --bg-chat: #0f0f12;
+  --bg-header: rgba(15, 15, 18, 0.85);
+  --bg-composer: rgba(15, 15, 18, 0.85);
+  --bg-elevated: #1a1a20;
+
+  --layer-1: rgba(255, 255, 255, 0.04);
+  --layer-2: rgba(255, 255, 255, 0.06);
+  --layer-3: rgba(255, 255, 255, 0.09);
+  --layer-4: rgba(255, 255, 255, 0.13);
+  --layer-scrim: rgba(0, 0, 0, 0.60);
+
+  --bg-bubble-in: rgba(255, 255, 255, 0.06);
+  --bg-bubble-in-hover: rgba(255, 255, 255, 0.10);
+  --bg-bubble-out: #3b82f6;
+  --bg-bubble-out-hover: #2563eb;
+  --text-bubble-out: #ffffff;
+  --bg-input: rgba(255, 255, 255, 0.04);
+
+  --bg-surface: rgba(255, 255, 255, 0.04);
+  --bg-surface-hover: rgba(255, 255, 255, 0.06);
+  --bg-row-active: rgba(59, 130, 246, 0.12);
+
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-color-active: rgba(255, 255, 255, 0.12);
+
+  --accent: #3b82f6;
+  --accent-strong: #60a5fa;
+  --accent-hover: #2563eb;
+  --accent-blue: #2563eb;
+  --accent-muted: rgba(59, 130, 246, 0.14);
+  --accent-ring: rgba(59, 130, 246, 0.45);
+  --accent-contrast: #ffffff;
+
+  --color-online: #22c55e;
+  --danger: #f08a8a;
+  --danger-soft: rgba(240, 138, 138, 0.10);
+  --danger-border: rgba(240, 138, 138, 0.20);
+  --warning: #fbbf24;
+
+  --text-primary: #e5e7eb;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --text-on-accent: #ffffff;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.30);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.32);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.50);
+
+  color-scheme: dark;
+}
+
+/* ---- Dark: follow the OS when the user has not chosen ---------------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    --bg-app: #0f0f12;
+    --bg-sidebar: #131317;
+    --bg-rail: #0a0a0c;
+    --bg-chat: #0f0f12;
+    --bg-header: rgba(15, 15, 18, 0.85);
+    --bg-composer: rgba(15, 15, 18, 0.85);
+    --bg-elevated: #1a1a20;
+
+    --layer-1: rgba(255, 255, 255, 0.04);
+    --layer-2: rgba(255, 255, 255, 0.06);
+    --layer-3: rgba(255, 255, 255, 0.09);
+    --layer-4: rgba(255, 255, 255, 0.13);
+    --layer-scrim: rgba(0, 0, 0, 0.60);
+
+    --bg-bubble-in: rgba(255, 255, 255, 0.06);
+    --bg-bubble-in-hover: rgba(255, 255, 255, 0.10);
+    --bg-bubble-out: #3b82f6;
+    --bg-bubble-out-hover: #2563eb;
+    --bg-input: rgba(255, 255, 255, 0.04);
+
+    --bg-surface: rgba(255, 255, 255, 0.04);
+    --bg-surface-hover: rgba(255, 255, 255, 0.06);
+    --bg-row-active: rgba(59, 130, 246, 0.12);
+
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-color-active: rgba(255, 255, 255, 0.12);
+
+    --accent: #3b82f6;
+    --accent-strong: #60a5fa;
+    --accent-hover: #2563eb;
+    --accent-blue: #2563eb;
+    --accent-muted: rgba(59, 130, 246, 0.14);
+    --accent-ring: rgba(59, 130, 246, 0.45);
+
+    --color-online: #22c55e;
+    --danger: #f08a8a;
+    --danger-soft: rgba(240, 138, 138, 0.10);
+    --danger-border: rgba(240, 138, 138, 0.20);
+    --warning: #fbbf24;
+
+    --text-primary: #e5e7eb;
+    --text-secondary: #9ca3af;
+    --text-muted: #6b7280;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.30);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.32);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.50);
+
+    color-scheme: dark;
+  }
+}
+
+/* ---- Expose tokens to Tailwind utilities ------------------------------ */
+@theme inline {
+  --color-app: var(--bg-app);
+  --color-sidebar: var(--bg-sidebar);
+  --color-rail: var(--bg-rail);
+  --color-elevated: var(--bg-elevated);
+  --color-surface: var(--bg-surface);
+  --color-surface-hover: var(--bg-surface-hover);
+  --color-layer-1: var(--layer-1);
+  --color-layer-2: var(--layer-2);
+  --color-layer-3: var(--layer-3);
+  --color-layer-4: var(--layer-4);
+
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-muted: var(--accent-muted);
+  --color-accent-contrast: var(--accent-contrast);
+
+  --color-fg: var(--text-primary);
+  --color-fg-secondary: var(--text-secondary);
+  --color-fg-muted: var(--text-muted);
+  --color-on-accent: var(--text-on-accent);
+
+  --color-online: var(--color-online);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+
+  --color-edge: var(--border-color);
+  --color-edge-active: var(--border-color-active);
+
+  --font-sans: var(--font-primary);
+
+  --shadow-card: var(--shadow-sm);
+  --shadow-pop: var(--shadow-md);
+  --shadow-modal: var(--shadow-lg);
+}
+
+/* =========================================================================
+   Base
+   ========================================================================= */
+
+/* Base styles live in Tailwind's `base` layer so that utility classes
+   (p-*, m-*, …) can override them. An unlayered `* { padding: 0 }` would
+   silently beat every utility regardless of source order. Tailwind's own
+   preflight already zeroes margin/padding and sets border-box. */
+@layer base {
+  * {
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background-color: var(--bg-app);
+    color: var(--text-primary);
+    font-family: var(--font-primary);
+    overflow: hidden;
+    height: 100vh;
+    height: 100dvh;
+  }
+}
+
+/* Theme transition — skipped for users who prefer reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  body,
+  .sidebar,
+  .chat-area,
+  .wasp-nav {
+    transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
+  }
+}
+
+/* =========================================================================
+   Shared component primitives
+   ========================================================================= */
+
+.glass-panel {
+  background: var(--bg-header);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+}
+
+.glass-modal {
+  background: var(--bg-elevated);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--layer-3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--layer-4);
+}
+
+/* Never show a broken-image placeholder for avatars. */
+img[class*="avatar"],
+.chat-avatar-container img,
+.avatar-preview-wrapper img,
+.avatar-placeholder img,
+.forward-target img {
+  background: var(--layer-2);
+  object-fit: cover;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.app-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* =========================================================================
+   Animations
+   ========================================================================= */
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes drawCheck {
+  to { stroke-dashoffset: 0; }
+}
+
+.animate-message {
+  animation: slideUp 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-fade {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-message,
+  .animate-fade {
+    animation: none;
+  }
+}
+
+.checkmark-svg {
+  width: 16px;
+  height: 16px;
+  stroke: var(--accent);
+  stroke-width: 2;
+  fill: none;
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+  animation: drawCheck 0.3s ease-out forwards;
+}
+
+.checkmark-svg.read {
+  stroke-dashoffset: 0;
+}
+
+input:focus,
+textarea:focus,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.typing-dots {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  padding: 6px 12px;
+}
+
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--text-muted);
+  border-radius: 50%;
+  animation: pulse 1s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* =========================================================================
+   Forced dark context
+   -------------------------------------------------------------------------
+   Surfaces that stay dark in every theme (video calls, media lightboxes),
+   matching how Zoom / Meet / Slack huddles behave. Re-declaring the tokens
+   locally means descendants can keep using the same token names.
+   ========================================================================= */
+.force-dark {
+  --bg-app: #0f0f12;
+  --bg-elevated: #1a1a20;
+  --layer-1: rgba(255, 255, 255, 0.04);
+  --layer-2: rgba(255, 255, 255, 0.06);
+  --layer-3: rgba(255, 255, 255, 0.09);
+  --layer-4: rgba(255, 255, 255, 0.13);
+  --layer-scrim: rgba(0, 0, 0, 0.60);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-color-active: rgba(255, 255, 255, 0.12);
+  --bg-surface: rgba(255, 255, 255, 0.04);
+  --bg-surface-hover: rgba(255, 255, 255, 0.06);
+  --text-primary: #e5e7eb;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --accent-strong: #60a5fa;
+  --accent-muted: rgba(59, 130, 246, 0.14);
+  color-scheme: dark;
+}
+
+/* ===== Mobile app frame ==================================================
+   The 68px icon rail becomes a bottom tab bar on phones — the left-rail
+   pattern eats a fifth of a 375px screen and thumbs live at the bottom. */
+@media (max-width: 768px) {
+  .wasp-shell {
+    flex-direction: column;
+  }
+  /* Instagram-style floating pill: detached from the edges, blurred, rounded,
+     hovering over the content near the bottom of the screen. */
+  .wasp-rail {
+    position: fixed;
+    left: 14px;
+    right: 14px;
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    width: auto;
+    min-width: 0;
+    height: auto;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    gap: 0;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--bg-rail) 82%, transparent);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 10px 34px rgba(0, 0, 0, 0.3);
+    z-index: 60;
+  }
+  /* Keep app content (chat composer especially) clear of the floating pill. */
+  .wasp-view {
+    padding-bottom: calc(66px + env(safe-area-inset-bottom));
+  }
+  /* Inside an open conversation the pill nav hides (WhatsApp-style) — the
+     composer gets the full bottom edge and the back button is the way out. */
+  body:has(.mobile-chat-open) .wasp-rail {
+    display: none;
+  }
+  body:has(.mobile-chat-open) .wasp-view {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  /* Rail popovers (workspace switcher, account menu) were positioned to fly
+     out RIGHT of a left rail; from the bottom pill they must open upward and
+     stay on-screen. */
+  .wasp-rail .rail-popover {
+    position: fixed;
+    left: 14px;
+    right: 14px;
+    top: auto;
+    bottom: calc(84px + env(safe-area-inset-bottom));
+    width: auto;
+    margin: 0;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+  /* The brand mark and spacers are chrome, not navigation — reclaim the room. */
+  .wasp-rail > [title="WASP"],
+  .wasp-rail > .mb-2,
+  .wasp-rail > .my-2 {
+    display: none;
+  }
+  .wasp-rail > .mt-auto {
+    margin-top: 0;
+  }
+}
+
+/* ---------- PWA install nudge ---------- */
+.install-prompt {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 60;
+  width: 330px;
+  max-width: calc(100vw - 36px);
+  padding: 14px 14px 14px 16px;
+  border-radius: 16px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color-active);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+}
+
+/* On phones, sit above the floating pill nav instead of behind it.
+   768px matches the pill nav's own breakpoint exactly. */
+@media (max-width: 768px) {
+  .install-prompt {
+    left: 14px;
+    right: 14px;
+    width: auto;
+    bottom: calc(84px + env(safe-area-inset-bottom));
+  }
+  /* Never cover the composer: hide the banner while inside an open chat. */
+  body:has(.mobile-chat-open) .install-prompt {
+    display: none;
+  }
+}
+
+/* ---------- Marketing pages: sticky top bar + normal document scrolling ---------- */
+.marketing-chrome {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: color-mix(in srgb, var(--bg-app) 85%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* The app shell locks body scrolling (it scrolls inside panels). Marketing
+   pages scroll the document — unlock body wherever the marketing chrome is. */
+body:has(.marketing-chrome) {
+  overflow: auto;
+  height: auto;
+  min-height: 100dvh;
+}

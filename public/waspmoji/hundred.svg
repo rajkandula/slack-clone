@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<style>
+@media (prefers-reduced-motion: no-preference) {
+@keyframes pop{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}} .h1{animation:pop .8s ease-in-out infinite}
+}
+</style>
+<g class="" style="transform-origin:32px 36px">
+<g class="ant" style="transform-origin:32px 12px">
+<path d="M14 10 Q10 2 4 4" stroke="#3b3b3f" stroke-width="3" fill="none" stroke-linecap="round"/>
+<path d="M50 10 Q54 2 60 4" stroke="#3b3b3f" stroke-width="3" fill="none" stroke-linecap="round"/>
+<circle cx="4" cy="4" r="3" fill="#1d4ed8"/><circle cx="60" cy="4" r="3" fill="#1d4ed8"/>
+</g>
+<circle cx="32" cy="36" r="26" fill="#FFC93D"/>
+<path d="M9 45 a26 26 0 0 0 46 0 z" fill="#3b3b3f"/>
+<path d="M12 50 a26 26 0 0 0 40 0 v-5 H12 z" fill="#FFC93D"/>
+<path d="M15 55 a26 26 0 0 0 34 0 v-4 H15 z" fill="#3b3b3f"/>
+
+<path d="M18 28 h9 M37 28 h9" stroke="#1f2937" stroke-width="3.4" stroke-linecap="round"/><text class="h1" style="transform-origin:32px 41px" x="32" y="45" text-anchor="middle" font-family="Arial" font-weight="900" font-size="15" fill="#e11d48">100</text>
+</g></svg>
