@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>heywasp deck</title>
+<style>
+  :root {
+    --bg: #eef1f6;
+    --stage: #ffffff;
+    --surface: #f5f7fb;
+    --surface-2: #e9eef7;
+    --text: #1a1d21;
+    --text-muted: #5b6169;
+    --border: #d5dbe5;
+    --accent: #2563eb;
+    --accent-strong: #1d4ed8;
+    --accent-soft: rgba(37, 99, 235, 0.10);
+    --accent-line: rgba(37, 99, 235, 0.55);
+    --ok: #15803d;
+    --ok-soft: rgba(22, 163, 74, 0.10);
+    --warn: #b45309;
+    --warn-soft: rgba(217, 119, 6, 0.12);
+    --mark-a: #4f8df9;
+    --mark-b: #1d4ed8;
+    --on-accent: #ffffff;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --radius: 18px;
+    --ease: cubic-bezier(.2, .7, .2, 1);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #08090c;
+      --stage: #0f0f12;
+      --surface: #17181d;
+      --surface-2: #1f2128;
+      --text: #e5e7eb;
+      --text-muted: #9ca3af;
+      --border: #2a2d36;
+      --accent: #3b82f6;
+      --accent-strong: #60a5fa;
+      --accent-soft: rgba(59, 130, 246, 0.16);
+      --accent-line: rgba(96, 165, 250, 0.65);
+      --ok: #4ade80;
+      --ok-soft: rgba(34, 197, 94, 0.14);
+      --warn: #fbbf24;
+      --warn-soft: rgba(251, 191, 36, 0.14);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* 1280x720 stage, scaled to fit the window by script */
+  #viewport { position: fixed; inset: 0; overflow: hidden; }
+  #stage {
+    position: absolute; top: 0; left: 0;
+    width: 1280px; height: 720px;
+    transform-origin: 0 0;
+    background: var(--stage);
+    border-radius: 6px;
+    box-shadow: 0 30px 80px -40px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .slide {
+    position: absolute; inset: 0;
+    padding: 64px 80px 72px;
+    display: flex; flex-direction: column;
+    opacity: 0; visibility: hidden;
+    transform: translateY(14px);
+    transition: opacity .4s var(--ease), transform .4s var(--ease), visibility 0s linear .4s;
+  }
+  .slide.active {
+    opacity: 1; visibility: visible; transform: none;
+    transition: opacity .4s var(--ease), transform .4s var(--ease), visibility 0s;
+  }
+
+  .kicker {
+    font-size: 18px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--accent); margin: 0 0 14px;
+  }
+  h1 { font-size: 96px; line-height: 1; margin: 0; letter-spacing: -0.03em; font-weight: 800; }
+  h2 { font-size: 50px; line-height: 1.08; margin: 0 0 30px; letter-spacing: -0.02em; font-weight: 800; max-width: 1060px; }
+  p { margin: 0; }
+  .lede { font-size: 30px; line-height: 1.4; color: var(--text-muted); max-width: 980px; }
+  .muted { color: var(--text-muted); }
+  code, .mono { font-family: var(--mono); font-size: .88em; }
+  .accent { color: var(--accent); }
+
+  /* ---------- title ---------- */
+  .title-wrap { margin: auto 0; display: flex; flex-direction: column; gap: 30px; }
+  .title-row { display: flex; align-items: center; gap: 34px; }
+  .title-row svg { width: 132px; height: 132px; flex: none; }
+  .chips { display: flex; flex-wrap: wrap; gap: 12px; }
+  .chip {
+    font-size: 21px; font-weight: 600; padding: 9px 18px; border-radius: 999px;
+    background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border);
+  }
+
+  /* ---------- cards ---------- */
+  .grid { display: grid; gap: 22px; }
+  .g2 { grid-template-columns: 1fr 1fr; }
+  .g3 { grid-template-columns: repeat(3, 1fr); }
+  .g4 { grid-template-columns: repeat(4, 1fr); }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 26px 28px;
+  }
+  .card h3 { margin: 0 0 10px; font-size: 27px; letter-spacing: -0.01em; }
+  .card p, .card li { font-size: 22px; line-height: 1.42; color: var(--text-muted); }
+  .card ul { margin: 0; padding-left: 22px; }
+  .card li + li { margin-top: 6px; }
+  .card.accent-card { background: var(--accent-soft); border-color: var(--accent-line); }
+  .tag {
+    display: inline-block; font-size: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    padding: 5px 11px; border-radius: 8px; margin-bottom: 12px;
+  }
+  .tag.ok { background: var(--ok-soft); color: var(--ok); }
+  .tag.warn { background: var(--warn-soft); color: var(--warn); }
+  .tag.blue { background: var(--accent-soft); color: var(--accent); }
+
+  /* ---------- problem slide ---------- */
+  .apps { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 18px; }
+  .app {
+    font-size: 20px; font-weight: 600; padding: 12px 16px; border-radius: 12px;
+    background: var(--stage); border: 1px dashed var(--border); color: var(--text-muted);
+  }
+  .inbox { margin-top: 18px; display: flex; flex-direction: column; gap: 10px; }
+  .inbox div {
+    font-size: 20px; padding: 11px 16px; border-radius: 12px; background: var(--stage);
+    border: 1px solid var(--border); display: flex; justify-content: space-between;
+  }
+  .inbox .odd { border-color: var(--warn); background: var(--warn-soft); }
+
+  /* ---------- solution slide ---------- */
+  .worlds { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .shared { margin-top: 22px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+
+  /* ---------- architecture svg ---------- */
+  .diagram { width: 1120px; height: 470px; display: block; margin-top: -6px; }
+  .d-box { fill: var(--surface); stroke: var(--border); stroke-width: 1.5; }
+  .d-server { fill: var(--accent-soft); stroke: var(--accent-line); stroke-width: 1.5; }
+  .d-inner { fill: var(--stage); stroke: var(--border); stroke-width: 1.5; }
+  .d-ext { fill: var(--surface-2); stroke: var(--border); stroke-width: 1.5; }
+  .d-t { fill: var(--text); font-family: var(--font); font-size: 19px; font-weight: 700; }
+  .d-s { fill: var(--text-muted); font-family: var(--font); font-size: 15px; }
+  .d-h { fill: var(--accent); font-family: var(--font); font-size: 15px; font-weight: 700; letter-spacing: .08em; }
+  .d-l { fill: var(--text-muted); font-family: var(--font); font-size: 14px; font-weight: 600; }
+  .d-line { stroke: var(--text-muted); stroke-width: 2; fill: none; }
+  .d-flow { stroke: var(--accent); stroke-width: 2.5; fill: none; stroke-dasharray: 7 7; }
+  .d-ah { fill: var(--text-muted); }
+  .d-ah-a { fill: var(--accent); }
+  .slide.active .d-flow { animation: dash 1.1s linear infinite; }
+  @keyframes dash { to { stroke-dashoffset: -28; } }
+
+  /* ---------- journey ---------- */
+  .track { position: relative; margin-top: 10px; }
+  .rail { position: absolute; left: 56px; right: 56px; top: 36px; height: 4px; background: var(--border); border-radius: 4px; }
+  /* The dots light up one after another to show the order of the steps. */
+  .slide.active .dot { animation: lit 6s linear infinite; }
+  .slide.active .step:nth-child(2) .dot { animation-delay: 1.2s; }
+  .slide.active .step:nth-child(3) .dot { animation-delay: 2.4s; }
+  .slide.active .step:nth-child(4) .dot { animation-delay: 3.6s; }
+  .slide.active .step:nth-child(5) .dot { animation-delay: 4.8s; }
+  @keyframes lit {
+    0%, 19% { background: var(--accent); color: var(--on-accent); box-shadow: 0 0 0 10px var(--accent-soft); }
+    21%, 100% { background: var(--stage); color: var(--accent); box-shadow: none; }
+  }
+  .steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; position: relative; }
+  .step { text-align: center; }
+  .dot {
+    width: 74px; height: 74px; border-radius: 50%; margin: 0 auto 18px;
+    display: grid; place-items: center; font-size: 28px; font-weight: 800;
+    background: var(--stage); border: 3px solid var(--accent); color: var(--accent);
+    position: relative; z-index: 1;
+  }
+  .step h3 { font-size: 26px; margin: 0 0 8px; }
+  .step p { font-size: 19px; line-height: 1.4; color: var(--text-muted); }
+  .note {
+    margin-top: auto; font-size: 22px; line-height: 1.45; color: var(--text-muted);
+    border-left: 4px solid var(--accent); padding: 6px 0 6px 18px;
+  }
+
+  /* ---------- stack ---------- */
+  .stack .card h3 { font-size: 22px; color: var(--accent); text-transform: uppercase; letter-spacing: .08em; }
+  .stack .card p { font-size: 21px; color: var(--text); }
+
+  /* ---------- chrome (not scaled) ---------- */
+  #bar-wrap { position: fixed; top: 0; left: 0; right: 0; height: 4px; background: transparent; z-index: 5; }
+  #bar { height: 100%; width: 0; background: var(--accent); transition: width .35s var(--ease); }
+  #controls {
+    position: fixed; right: 16px; bottom: 14px; z-index: 5;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 14px; color: var(--text-muted);
+  }
+  #controls button {
+    font: inherit; font-size: 16px; line-height: 1; width: 36px; height: 36px; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--stage); color: var(--text); cursor: pointer;
+  }
+  #controls button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  #counter { min-width: 52px; text-align: center; font-variant-numeric: tabular-nums; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slide, .slide.active { transition: none; transform: none; }
+    .slide.active .d-flow, .slide.active .dot { animation: none; }
+    #bar { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div id="bar-wrap" aria-hidden="true"><div id="bar"></div></div>
+
+<div id="viewport">
+  <main id="stage" aria-live="polite">
+
+    <!-- 1. Title -->
+    <section class="slide" data-title="heywasp">
+      <div class="title-wrap">
+        <div class="title-row">
+          <svg viewBox="0 0 48 48" role="img" aria-label="WASP mark">
+            <defs>
+              <linearGradient id="wm" x1="8" y1="4" x2="40" y2="44" gradientUnits="userSpaceOnUse">
+                <stop offset="0" style="stop-color: var(--mark-a)"></stop>
+                <stop offset="1" style="stop-color: var(--mark-b)"></stop>
+              </linearGradient>
+            </defs>
+            <path d="M20.5 3.02a7 7 0 0 1 7 0l11.62 6.71a7 7 0 0 1 3.5 6.06v13.42a7 7 0 0 1-3.5 6.06L27.5 41.98a7 7 0 0 1-7 0L8.88 35.27a7 7 0 0 1-3.5-6.06V15.79a7 7 0 0 1 3.5-6.06L20.5 3.02Z" fill="url(#wm)"></path>
+            <g stroke="#ffffff" stroke-width="3.4" stroke-linecap="round">
+              <path d="M15.5 17.5h17" transform="rotate(-8 24 17.5)"></path>
+              <path d="M14 24.5h20" transform="rotate(-8 24 24.5)"></path>
+              <path d="M17.5 31.5h13" transform="rotate(-8 24 31.5)"></path>
+            </g>
+          </svg>
+          <div>
+            <p class="kicker">Open-source project</p>
+            <h1>heywasp</h1>
+          </div>
+        </div>
+        <p class="lede">Real-time messaging for people and teams: personal chats, invite-only workspaces, audio and video calls, and a feed, in one Next.js app.</p>
+        <div class="chips">
+          <span class="chip">Next.js 16</span>
+          <span class="chip">MongoDB</span>
+          <span class="chip">Server-Sent Events</span>
+          <span class="chip">WebRTC</span>
+          <span class="chip">S3-compatible storage</span>
+          <span class="chip">MIT licence</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Problem -->
+    <section class="slide" data-title="The problem">
+      <p class="kicker">The problem</p>
+      <h2>Personal and team conversations end up tangled, or scattered across apps.</h2>
+      <div class="grid g2">
+        <div class="card">
+          <span class="tag warn">Tangled</span>
+          <h3>One inbox for everything</h3>
+          <p>A private chat sits between work channels, so it is easy to post in the wrong place.</p>
+          <div class="inbox" aria-hidden="true">
+            <div><span>#team-channel</span><span class="muted">work</span></div>
+            <div class="odd"><span>Chat with a friend</span><span class="muted">personal</span></div>
+            <div><span>#another-channel</span><span class="muted">work</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <span class="tag warn">Scattered</span>
+          <h3>Or one app per job</h3>
+          <p>Chat in one place, channels in another, calls in a third, and a download just to see a file.</p>
+          <div class="apps" aria-hidden="true">
+            <span class="app">Chat app</span>
+            <span class="app">Team app</span>
+            <span class="app">Call app</span>
+            <span class="app">File viewer</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Solution -->
+    <section class="slide" data-title="The solution">
+      <p class="kicker">The solution</p>
+      <h2>One app with two clearly separate worlds.</h2>
+      <div class="worlds">
+        <div class="card accent-card">
+          <span class="tag blue">Personal</span>
+          <h3>DMs and personal groups</h3>
+          <p>Start a chat by username. One DM thread per person, never duplicated per workspace.</p>
+        </div>
+        <div class="card accent-card">
+          <span class="tag blue">Workspace</span>
+          <h3>#channels and roles</h3>
+          <p>Private workspaces you join by invite code. Joining puts you in every public channel at once.</p>
+        </div>
+      </div>
+      <div class="shared">
+        <div class="card">
+          <h3>Calls</h3>
+          <p>1:1 and group audio and video, screen sharing, add people mid-call.</p>
+        </div>
+        <div class="card">
+          <h3>Files preview inline</h3>
+          <p>PDF, Word, Excel, Markdown, Mermaid, code, CSV and EPUB render in place.</p>
+        </div>
+        <div class="card">
+          <h3>A feed</h3>
+          <p>Posts with an audience, comments, likes, reposts, follows and private accounts.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. How it works -->
+    <section class="slide" data-title="How it works">
+      <p class="kicker">How it works</p>
+      <h2>One Node server, MongoDB, a bucket, and browsers talking directly for calls.</h2>
+      <svg class="diagram" viewBox="0 0 1120 470" role="img" aria-label="Architecture: the browser sends JSON to the Next.js server and receives a Server-Sent Events stream; the server reads and writes MongoDB, polls it every 1.5 seconds for the stream, stores media in an S3-compatible bucket, sends email through Harakumo Mail and fetches TURN credentials; browsers in a call exchange audio and video over WebRTC.">
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" class="d-ah"></path>
+          </marker>
+          <marker id="aha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" class="d-ah-a"></path>
+          </marker>
+        </defs>
+
+        <!-- browser -->
+        <rect class="d-box" x="20" y="110" width="240" height="160" rx="16"></rect>
+        <text class="d-h" x="40" y="142">BROWSER</text>
+        <text class="d-t" x="40" y="176">React app shell</text>
+        <text class="d-s" x="40" y="202">chats, workspaces, feed</text>
+        <text class="d-s" x="40" y="226">call client</text>
+        <text class="d-s" x="40" y="250">service worker for push</text>
+
+        <!-- peers -->
+        <rect class="d-box" x="20" y="350" width="240" height="90" rx="16"></rect>
+        <text class="d-t" x="40" y="388">Other browsers</text>
+        <text class="d-s" x="40" y="414">in the call</text>
+
+        <!-- server -->
+        <rect class="d-server" x="330" y="20" width="380" height="430" rx="20"></rect>
+        <text class="d-h" x="355" y="52">NEXT.JS 16 SERVER, ONE PROCESS</text>
+
+        <rect class="d-inner" x="355" y="72" width="330" height="76" rx="12"></rect>
+        <text class="d-t" x="375" y="104">SSE stream</text>
+        <text class="d-s" x="375" y="130">/api/messages/sync, one pass per 1.5 s</text>
+
+        <rect class="d-inner" x="355" y="170" width="330" height="88" rx="12"></rect>
+        <text class="d-t" x="375" y="202">API routes</text>
+        <text class="d-s" x="375" y="226">48 route files, cookie JWT auth</text>
+        <text class="d-s" x="375" y="248">rate limits in src/proxy.ts</text>
+
+        <rect class="d-inner" x="355" y="282" width="330" height="76" rx="12"></rect>
+        <text class="d-t" x="375" y="314">Media pipeline</text>
+        <text class="d-s" x="375" y="340">sharp, heic-convert, ffmpeg</text>
+
+        <rect class="d-inner" x="355" y="374" width="330" height="62" rx="12"></rect>
+        <text class="d-t" x="375" y="401">Moderation</text>
+        <text class="d-s" x="375" y="424">NSFW model and text filter</text>
+
+        <!-- external -->
+        <rect class="d-ext" x="820" y="30" width="280" height="110" rx="16"></rect>
+        <text class="d-t" x="842" y="74">MongoDB</text>
+        <text class="d-s" x="842" y="100">22 collections, TTL indexes</text>
+        <text class="d-s" x="842" y="122">validators set up by the app</text>
+
+        <rect class="d-ext" x="820" y="162" width="280" height="64" rx="16"></rect>
+        <text class="d-t" x="842" y="190">Harakumo Mail</text>
+        <text class="d-s" x="842" y="213">sign-in codes, reset links</text>
+
+        <rect class="d-ext" x="820" y="246" width="280" height="64" rx="16"></rect>
+        <text class="d-t" x="842" y="274">TURN credentials</text>
+        <text class="d-s" x="842" y="297">optional, for strict networks</text>
+
+        <rect class="d-ext" x="820" y="330" width="280" height="110" rx="16"></rect>
+        <text class="d-t" x="842" y="372">S3-compatible bucket</text>
+        <text class="d-s" x="842" y="398">uploads and renditions</text>
+        <text class="d-s" x="842" y="420">daily database dumps</text>
+
+        <!-- browser to api -->
+        <path class="d-line" d="M260 225 L355 214" marker-end="url(#ah)"></path>
+        <text class="d-l" x="268" y="250">JSON</text>
+        <!-- sse to browser (animated, flows toward the browser) -->
+        <path class="d-flow" d="M355 112 L262 150" marker-end="url(#aha)"></path>
+        <text class="d-l" x="262" y="120">events</text>
+        <!-- api to media -->
+        <path class="d-line" d="M520 258 L520 280" marker-end="url(#ah)"></path>
+        <path class="d-line" d="M520 358 L520 372" marker-end="url(#ah)"></path>
+        <!-- sse polls mongo (animated) -->
+        <path class="d-flow" d="M685 104 L818 74" marker-end="url(#aha)"></path>
+        <text class="d-l" x="712" y="78">poll</text>
+        <!-- api reads and writes mongo -->
+        <path class="d-line" d="M685 196 L818 116" marker-end="url(#ah)"></path>
+        <!-- api to mail and turn -->
+        <path class="d-line" d="M685 214 L818 194" marker-end="url(#ah)"></path>
+        <path class="d-line" d="M685 232 L818 276" marker-end="url(#ah)"></path>
+        <!-- media to bucket -->
+        <path class="d-line" d="M685 320 L818 380" marker-end="url(#ah)"></path>
+        <!-- webrtc -->
+        <path class="d-flow" d="M140 274 L140 346" marker-start="url(#aha)" marker-end="url(#aha)"></path>
+        <text class="d-l" x="152" y="306">WebRTC</text>
+        <text class="d-l" x="152" y="326">audio and video</text>
+      </svg>
+    </section>
+
+    <!-- 5. A message's journey -->
+    <section class="slide" data-title="A message's journey">
+      <p class="kicker">How it works: one message</p>
+      <h2>Every message gets a number, so delivery is in order and never doubled.</h2>
+      <div class="track">
+        <div class="rail" aria-hidden="true"></div>
+        <div class="steps">
+          <div class="step">
+            <div class="dot">1</div>
+            <h3>Send</h3>
+            <p><code>POST /api/messages</code> with a client message id</p>
+          </div>
+          <div class="step">
+            <div class="dot">2</div>
+            <h3>Number</h3>
+            <p>Atomic <code>$inc</code> on the chat's <code>maxSeq</code></p>
+          </div>
+          <div class="step">
+            <div class="dot">3</div>
+            <h3>Store</h3>
+            <p>Insert into <code>messages</code> with that <code>seq</code></p>
+          </div>
+          <div class="step">
+            <div class="dot">4</div>
+            <h3>Deliver</h3>
+            <p>Each recipient's SSE pass sends rows above its pointer, within 1.5 s</p>
+          </div>
+          <div class="step">
+            <div class="dot">5</div>
+            <h3>Wake</h3>
+            <p>Web push to anyone whose stream is not live</p>
+          </div>
+        </div>
+      </div>
+      <p class="note">A retry with the same client id returns the stored message. Edits, deletes and reactions come back through the same loop as <code>message_update</code> events; call signals use it too.</p>
+    </section>
+
+    <!-- 6. Guardrails -->
+    <section class="slide" data-title="Guardrails">
+      <p class="kicker">Guardrails in the code</p>
+      <h2>You can only reach people you share a workspace with.</h2>
+      <div class="grid g2">
+        <div class="card accent-card">
+          <h3>Invite-only workspaces</h3>
+          <p>Search, new DMs, group adds, follows, profiles and posts all check for a shared workspace. Joining takes an invite code.</p>
+        </div>
+        <div class="card">
+          <h3>Codes stored as hashes</h3>
+          <p>Emailed codes are HMAC-hashed, single use, 5 guesses, 3 sends per address per 15 minutes.</p>
+        </div>
+        <div class="card">
+          <h3>Uploads never run</h3>
+          <p>Executables are refused, HTML and scripts are stored as plain text, HTML previews are sandboxed.</p>
+        </div>
+        <div class="card">
+          <h3>Moderation in-process</h3>
+          <p>Images are scanned on upload, public text is filtered, and three reports hide a post.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Tech stack -->
+    <section class="slide" data-title="Tech stack">
+      <p class="kicker">Tech stack</p>
+      <h2>Standard parts, one container.</h2>
+      <div class="grid g3 stack">
+        <div class="card"><h3>App</h3><p>Next.js 16, React 19, TypeScript, Tailwind CSS v4</p></div>
+        <div class="card"><h3>Data</h3><p>MongoDB driver 7, <code>$jsonSchema</code> validators, TTL indexes</p></div>
+        <div class="card"><h3>Realtime and calls</h3><p>Server-Sent Events, WebRTC, web push with VAPID</p></div>
+        <div class="card"><h3>Media</h3><p>sharp, heic-convert, ffmpeg, S3&#8209;compatible storage</p></div>
+        <div class="card"><h3>Safety and auth</h3><p>nsfwjs on TensorFlow.js, obscenity, bcrypt, JWT</p></div>
+        <div class="card"><h3>Previews and ship</h3><p>react-markdown, highlight.js, mermaid, SheetJS, mammoth, epub.js. Docker on Node 22</p></div>
+      </div>
+    </section>
+
+    <!-- 8. Status and next steps -->
+    <section class="slide" data-title="Status and next steps">
+      <p class="kicker">Status and next steps</p>
+      <h2>Open source since 2026-10-13. The core works; tests and scale are next.</h2>
+      <div class="grid g3">
+        <div class="card">
+          <span class="tag ok">Built</span>
+          <ul>
+            <li>Chats, channels, threads, reactions, pins</li>
+            <li>Workspaces with invite codes and roles</li>
+            <li>Calls with screen share and TURN</li>
+            <li>Feed, previews, push, email sign-in</li>
+            <li>Admin dashboard and backups</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="tag warn">Not built yet</span>
+          <ul>
+            <li>The <code>/ws/rtc</code> signalling hub</li>
+            <li>Paged message history</li>
+            <li>Revocable sessions</li>
+            <li>A model-based summary: today it is keywords</li>
+          </ul>
+        </div>
+        <div class="card accent-card">
+          <span class="tag blue">Next steps</span>
+          <ul>
+            <li>Add tests and CI</li>
+            <li>Page history, index chat participants</li>
+            <li>Store sessions so they can be revoked</li>
+            <li>Bring the README in line with invite-only workspaces</li>
+            <li>Harakumo database version, planned in the README</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<nav id="controls" aria-label="Slide controls">
+  <button id="prev" type="button" aria-label="Previous slide">&#8592;</button>
+  <span id="counter" aria-live="polite">1 / 8</span>
+  <button id="next" type="button" aria-label="Next slide">&#8594;</button>
+</nav>
+
+<script>
+(function () {
+  var W = 1280, H = 720;
+  var stage = document.getElementById("stage");
+  var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+  var bar = document.getElementById("bar");
+  var counter = document.getElementById("counter");
+  var current = 0;
+
+  function fit() {
+    var s = Math.min(window.innerWidth / W, window.innerHeight / H);
+    var x = (window.innerWidth - W * s) / 2;
+    var y = (window.innerHeight - H * s) / 2;
+    stage.style.transform = "translate(" + x + "px," + y + "px) scale(" + s + ")";
+  }
+
+  function show(n) {
+    current = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function (el, k) {
+      var on = k === current;
+      el.classList.toggle("active", on);
+      el.setAttribute("aria-hidden", on ? "false" : "true");
+      el.setAttribute("role", "group");
+      el.setAttribute("aria-roledescription", "slide");
+      el.setAttribute("aria-label", (k + 1) + " of " + slides.length + ": " + el.getAttribute("data-title"));
+    });
+    bar.style.width = ((current + 1) / slides.length * 100) + "%";
+    counter.textContent = (current + 1) + " / " + slides.length;
+    try { history.replaceState(null, "", "#" + (current + 1)); } catch (e) { /* file or sandboxed view */ }
+  }
+
+  function next() { show(current + 1); }
+  function prev() { show(current - 1); }
+
+  document.addEventListener("keydown", function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var k = e.key;
+    if (k === "ArrowRight" || k === "ArrowDown" || k === "PageDown" || k === "Enter" || (k === " " && !e.shiftKey)) {
+      e.preventDefault(); next();
+    } else if (k === "ArrowLeft" || k === "ArrowUp" || k === "PageUp" || k === "Backspace" || (k === " " && e.shiftKey)) {
+      e.preventDefault(); prev();
+    } else if (k === "Home") {
+      e.preventDefault(); show(0);
+    } else if (k === "End") {
+      e.preventDefault(); show(slides.length - 1);
+    }
+  });
+
+  // Click the stage: left third goes back, the rest goes forward.
+  stage.addEventListener("click", function (e) {
+    var r = stage.getBoundingClientRect();
+    if (e.clientX - r.left < r.width / 3) prev(); else next();
+  });
+  document.getElementById("prev").addEventListener("click", function (e) { e.stopPropagation(); prev(); });
+  document.getElementById("next").addEventListener("click", function (e) { e.stopPropagation(); next(); });
+
+  // Swipe on touch screens.
+  var startX = null;
+  document.addEventListener("touchstart", function (e) { startX = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener("touchend", function (e) {
+    if (startX === null) return;
+    var dx = e.changedTouches[0].clientX - startX;
+    startX = null;
+    if (Math.abs(dx) > 40) { if (dx < 0) next(); else prev(); }
+  }, { passive: true });
+
+  window.addEventListener("resize", fit);
+  fit();
+  var fromHash = parseInt((location.hash || "").replace("#", ""), 10);
+  show(isNaN(fromHash) ? 0 : fromHash - 1);
+})();
+</script>
+</body>
+</html>
